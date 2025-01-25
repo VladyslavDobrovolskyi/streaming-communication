@@ -12,7 +12,7 @@ class Database {
 		if (!Database.instance) {
 			Database.instance = new Pool({
 				user: 'streamingdb',
-				host: 'POSTGRES',
+				host: 'postgres',
 				database: 'streamingdb',
 				password: 'dbstreaming',
 				port: 5432,
