@@ -45,15 +45,15 @@ jobs:
                       echo "🛠 Пересборка контейнера streaming-communication без кэша"
                       docker build -t streaming-communication .
 
-                      echo "🔍 Проверка наличия сети app-network"
-                      if [ ! $(docker network ls -q -f name=app-network) ]; then
-                          echo "🌐 Сеть app-network не найдена, создаем сеть"
-                          docker network create app-network
+                      echo "🔍 Проверка наличия сети streaming-network"
+                      if [ ! $(docker network ls -q -f name=streaming-network) ]; then
+                          echo "🌐 Сеть streaming-network не найдена, создаем сеть"
+                          docker network create streaming-network
                       fi
 
                       echo "🚀 Запуск контейнера streaming-communication"
                       docker run -d --name streaming-communication \
-                        --network app-network \
+                        --network streaming-network \
                         -p 7777:7777 \
                         streaming-communication
 
