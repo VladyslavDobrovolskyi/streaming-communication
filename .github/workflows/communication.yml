@@ -1,5 +1,4 @@
-# Github Actions workflow file for the communication
-name: Communication
+name: Remote SSH Command and CI Workflow
 
 on:
     push:
@@ -36,35 +35,40 @@ jobs:
                           echo "🛑 Остановка контейнера streaming-communication"
                           docker stop streaming-communication || true
                           docker rm streaming-communication || true
-
-                          echo "🛠 Пересборка контейнера streaming-communication без кэша"
-                          docker-compose build --no-cache streaming-communication
-
-                          echo "🚀 Запуск контейнера streaming-communication"
-                          docker-compose up -d --no-deps --force-recreate streaming-communication
-
-                          echo "🔍 Проверка, что контейнер streaming-communication поднялся"
-                          if [ $(docker ps -q -f name=streaming-communication) ]; then
-                              echo "✅ Контейнер streaming-communication успешно запущен"
-                          else
-                              echo "❌ Контейнер streaming-communication не запущен"
-                              exit 1
-                          fi
-                      else
-                          echo "🛠 Контейнер streaming-communication не найден, пересборка и запуск"
-                          docker-compose build --no-cache streaming-communication
-                          docker-compose up -d --no-deps --force-recreate streaming-communication
-
-                          echo "🔍 Проверка, что контейнер streaming-communication поднялся"
-                          if [ $(docker ps -q -f name=streaming-communication) ]; then
-                              echo "✅ Контейнер streaming-communication успешно запущен"
-                          else
-                              echo "❌ Контейнер streaming-communication не запущен"
-                              exit 1
-                          fi
                       fi
 
-                      echo "🗑 Удаление папки streaming-communication"
-                      rm -rf /home/ubuntu/streaming-communication
+                      echo "🗑 Удаление предыдущего образа streaming-communication, если он существует"
+                      if [ $(docker images -q streaming-communication) ]; then
+                          docker rmi streaming-communication || true
+                      fi
+
+                      echo "🛠 Пересборка контейнера streaming-communication без кэша"
+                      docker build -t streaming-communication .
+
+                      echo "🔍 Проверка наличия сети app-network"
+                      if [ ! $(docker network ls -q -f name=app-network) ]; then
+                          echo "🌐 Сеть app-network не найдена, создаем сеть"
+                          docker network create app-network
+                      fi
+
+                      echo "🚀 Запуск контейнера streaming-communication"
+                      docker run -d --name streaming-communication \
+                        --network app-network \
+                        -p 7777:7777 \
+                        streaming-communication
+
+                      echo "🔍 Проверка, что контейнер streaming-communication поднялся"
+                      if [ $(docker ps -q -f name=streaming-communication) ]; then
+                          echo "✅ Контейнер streaming-communication успешно запущен"
+                      else
+                          echo "❌ Контейнер streaming-communication не запущен"
+                          exit 1
+                      fi
+                      cd /home/ubuntu/
+
+                      echo "🗑 Очищаем пространство"
+                      if [ -d "streaming-communication" ]; then
+                          rm -rf streaming-communication
+                      fi
 
                       echo "✅ Деплой завершен успешно!"
