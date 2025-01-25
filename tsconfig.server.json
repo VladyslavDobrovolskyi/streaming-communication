@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"target": "ESNext", // Для новейших возможностей JavaScript
+		"module": "CommonJS", // Use CommonJS for compatibility with Node.js
+		"moduleResolution": "Node", // Разрешение модулей как в Node.js
+		"esModuleInterop": true, // Для совместимости с CommonJS и ES-модулями
+		"skipLibCheck": true, // Пропуск проверки типов в библиотеках
+		"allowJs": true, // Разрешение на использование JavaScript файлов
+		"strict": true, // Включение строгой типизации
+		"noUnusedLocals": true, // Ошибка на неиспользуемые переменные
+		"noUnusedParameters": true, // Ошибка на неиспользуемые параметры
+		"resolveJsonModule": true, // Разрешение импорта JSON файлов
+		"baseUrl": ".", // Основной путь для разрешенияной путь для разрешения м модулей
+
+		"paths": {
+			"*": ["node_modules/*"] // Путь для поиска модулей
+		},
+		"outDir": "./dist" // Папка для компиляции (не обязательно для tsx)
+	},
+	"include": [
+		"src/**/*.ts" // Включаем серверные файлы TypeScript
+	],
+	"exclude": [
+		"node_modules" // Исключаем node_modules
+	]
+}
