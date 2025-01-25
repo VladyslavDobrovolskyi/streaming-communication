@@ -1,1 +1,70 @@
-# Github Actions workflow file for the gateway
+# Github Actions workflow file for the communication
+name: Communication
+
+on:
+    push:
+        branches:
+            - dev
+jobs:
+    build:
+        name: Build and Deploy
+        runs-on: ubuntu-latest
+        steps:
+            - name: Executing remote SSH commands using password
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  password: ${{ secrets.PASSWORD }}
+                  port: ${{ secrets.PORT }}
+                  script: |
+                      cd /home/ubuntu/
+                      echo "🔄 Cтягиваем код с github"
+                      echo "🗑 Очищаем следы прошлых запусков, если имеются"
+                      if [ -d "streaming-communication" ]; then
+                          rm -rf streaming-communication
+                      fi
+                      git clone git@github.com:VladyslavDobrovolskyi/streaming-communication.git
+                      cd streaming-communication
+                      git checkout dev
+                      git pull
+                      rm -rf .git
+
+                      echo "🔄 Остановка и пересборка контейнера"
+                      echo "🛑 Проверка наличия контейнера streaming-communication"
+                      if [ $(docker ps -q -f name=streaming-communication) ]; then
+                          echo "🛑 Остановка контейнера streaming-communication"
+                          docker stop streaming-communication || true
+                          docker rm streaming-communication || true
+
+                          echo "🛠 Пересборка контейнера streaming-communication без кэша"
+                          docker-compose build --no-cache streaming-communication
+
+                          echo "🚀 Запуск контейнера streaming-communication"
+                          docker-compose up -d --no-deps --force-recreate streaming-communication
+
+                          echo "🔍 Проверка, что контейнер streaming-communication поднялся"
+                          if [ $(docker ps -q -f name=streaming-communication) ]; then
+                              echo "✅ Контейнер streaming-communication успешно запущен"
+                          else
+                              echo "❌ Контейнер streaming-communication не запущен"
+                              exit 1
+                          fi
+                      else
+                          echo "🛠 Контейнер streaming-communication не найден, пересборка и запуск"
+                          docker-compose build --no-cache streaming-communication
+                          docker-compose up -d --no-deps --force-recreate streaming-communication
+
+                          echo "🔍 Проверка, что контейнер streaming-communication поднялся"
+                          if [ $(docker ps -q -f name=streaming-communication) ]; then
+                              echo "✅ Контейнер streaming-communication успешно запущен"
+                          else
+                              echo "❌ Контейнер streaming-communication не запущен"
+                              exit 1
+                          fi
+                      fi
+
+                      echo "🗑 Удаление папки streaming-communication"
+                      rm -rf /home/ubuntu/streaming-communication
+
+                      echo "✅ Деплой завершен успешно!"
