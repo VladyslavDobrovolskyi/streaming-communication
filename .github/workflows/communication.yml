@@ -55,6 +55,7 @@ jobs:
                       echo "🚀 Запуск контейнера streaming-communication"
                       docker run -d --name streaming-communication \
                         --network streaming-network \
+                        --restart always \
                         -p 9999:9999 \
                         streaming-communication
 
