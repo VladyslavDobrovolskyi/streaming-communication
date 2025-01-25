@@ -1,4 +1,4 @@
-name: Remote SSH Command and CI Workflow
+name: Communication
 
 on:
     push:
