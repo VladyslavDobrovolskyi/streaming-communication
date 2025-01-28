@@ -109,6 +109,24 @@ io.on('connection', socket => {
 			iceCandidate,
 		})
 	})
+
+	// Обработка события VIDEO_PLAY
+	socket.on(ACTIONS.VIDEO_PLAY, ({ roomID, currentTime }) => {
+		console.log(`Client ${socket.id} is playing video in room: ${roomID}`)
+		socket.to(roomID).emit(ACTIONS.VIDEO_PLAY, { currentTime })
+	})
+
+	// Обработка события VIDEO_PAUSE
+	socket.on(ACTIONS.VIDEO_PAUSE, ({ roomID, currentTime }) => {
+		console.log(`Client ${socket.id} is pausing video in room: ${roomID}`)
+		socket.to(roomID).emit(ACTIONS.VIDEO_PAUSE, { currentTime })
+	})
+
+	// Обработка события VIDEO_SEEK
+	socket.on(ACTIONS.VIDEO_SEEK, ({ roomID, currentTime }) => {
+		console.log(`Client ${socket.id} is seeking video to ${currentTime}s in room: ${roomID}`)
+		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { currentTime })
+	})
 })
 
 server.listen(PORT, () => {

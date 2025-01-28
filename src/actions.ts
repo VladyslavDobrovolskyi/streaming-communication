@@ -8,6 +8,9 @@ const ACTIONS = {
 	RELAY_ICE: 'relay-ice',
 	ICE_CANDIDATE: 'ice-candidate',
 	SESSION_DESCRIPTION: 'session-description',
+	VIDEO_PLAY: 'video-play',
+	VIDEO_PAUSE: 'video-pause',
+	VIDEO_SEEK: 'video-seek',
 }
 
 export default ACTIONS
