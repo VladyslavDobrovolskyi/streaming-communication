@@ -13,6 +13,13 @@ const io = new Server(server, {
 	transports: ['websocket'],
 })
 
+app.use((req, res, next) => {
+	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+	res.setHeader('Pragma', 'no-cache')
+	res.setHeader('Expires', '0')
+	next()
+})
+
 const PORT = process.env.PORT || 9999
 
 function getClientRooms() {
