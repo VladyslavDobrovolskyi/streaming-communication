@@ -15,11 +15,8 @@ const io = new Server(server, {
 
 const PORT = process.env.PORT || 9999
 
-// Define a io
-
 function getClientRooms() {
 	const { rooms } = io.sockets.adapter
-
 	return Array.from(rooms.keys()).filter(roomID => validate(roomID) && version(roomID) === 4)
 }
 
@@ -30,30 +27,26 @@ function shareRoomsInfo() {
 }
 
 io.on('connection', socket => {
-	console.log('New client connected:', socket.id)
-	console.log('Namesapce:', io)
-	console.log('sockets:', io.sockets)
-	console.log('adapter:', io.sockets.adapter)
+	console.log(`New client connected: ${socket.id}`)
 	shareRoomsInfo()
 
 	socket.on(ACTIONS.JOIN, config => {
-		console.log('Пользователь заджойнился')
 		const { room: roomID } = config
 		const { rooms: joinedRooms } = socket
-		console.log('Команата:', roomID)
-		console.log('Komnati:', joinedRooms)
+		console.log(`Client ${socket.id} is attempting to join room: ${roomID}`)
 		if (Array.from(joinedRooms).includes(roomID)) {
-			return console.warn(`Already joined to ${roomID}`)
+			console.warn(`Client ${socket.id} already joined to room: ${roomID}`)
+			return
 		}
 
 		const clients = Array.from(io.sockets.adapter.rooms.get(roomID) || [])
+		console.log(`Room ${roomID} has ${clients.length} clients`)
 
 		clients.forEach(clientID => {
 			io.to(clientID).emit(ACTIONS.ADD_PEER, {
 				peerID: socket.id,
 				createOffer: false,
 			})
-
 			socket.emit(ACTIONS.ADD_PEER, {
 				peerID: clientID,
 				createOffer: true,
@@ -61,28 +54,31 @@ io.on('connection', socket => {
 		})
 
 		socket.join(roomID)
+		console.log(`Client ${socket.id} joined room: ${roomID}`)
 		shareRoomsInfo()
 	})
 
 	function leaveRoom() {
 		const { rooms } = socket
+		console.log(`Client ${socket.id} is leaving rooms: ${Array.from(rooms).join(', ')}`)
 
 		Array.from(rooms)
 			.filter(roomID => validate(roomID) && version(roomID) === 4)
 			.forEach(roomID => {
 				const clients = Array.from(io.sockets.adapter.rooms.get(roomID) || [])
+				console.log(`Room ${roomID} has ${clients.length} clients before client ${socket.id} leaves`)
 
 				clients.forEach(clientID => {
 					io.to(clientID).emit(ACTIONS.REMOVE_PEER, {
 						peerID: socket.id,
 					})
-
 					socket.emit(ACTIONS.REMOVE_PEER, {
 						peerID: clientID,
 					})
 				})
 
 				socket.leave(roomID)
+				console.log(`Client ${socket.id} left room: ${roomID}`)
 			})
 
 		shareRoomsInfo()
@@ -92,6 +88,7 @@ io.on('connection', socket => {
 	socket.on('disconnecting', leaveRoom)
 
 	socket.on(ACTIONS.RELAY_SDP, ({ peerID, sessionDescription }) => {
+		console.log(`Client ${socket.id} is relaying SDP to peer ${peerID}`)
 		io.to(peerID).emit(ACTIONS.SESSION_DESCRIPTION, {
 			peerID: socket.id,
 			sessionDescription,
@@ -99,6 +96,7 @@ io.on('connection', socket => {
 	})
 
 	socket.on(ACTIONS.RELAY_ICE, ({ peerID, iceCandidate }) => {
+		console.log(`Client ${socket.id} is relaying ICE candidate to peer ${peerID}`)
 		io.to(peerID).emit(ACTIONS.ICE_CANDIDATE, {
 			peerID: socket.id,
 			iceCandidate,
