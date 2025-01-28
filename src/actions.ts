@@ -11,6 +11,8 @@ const ACTIONS = {
 	VIDEO_PLAY: 'video-play',
 	VIDEO_PAUSE: 'video-pause',
 	VIDEO_SEEK: 'video-seek',
+	REQUEST_SYNC: 'request-sync',
+	SYNC_STATE: 'sync-state',
 }
 
 export default ACTIONS

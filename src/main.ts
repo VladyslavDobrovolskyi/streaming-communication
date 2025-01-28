@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-//@ts-nocheck
-
 import ACTIONS from './actions'
 import express from 'express'
 import { createServer } from 'http'
@@ -11,13 +8,6 @@ const app = express()
 const server = createServer(app)
 const io = new Server(server, {
 	transports: ['websocket'],
-})
-
-app.use((req, res, next) => {
-	res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
-	res.setHeader('Pragma', 'no-cache')
-	res.setHeader('Expires', '0')
-	next()
 })
 
 const PORT = process.env.PORT || 9999
@@ -110,22 +100,31 @@ io.on('connection', socket => {
 		})
 	})
 
-	// Обработка события VIDEO_PLAY
-	socket.on(ACTIONS.VIDEO_PLAY, ({ roomID, currentTime }) => {
-		console.log(`Client ${socket.id} is playing video in room: ${roomID}`)
-		socket.to(roomID).emit(ACTIONS.VIDEO_PLAY, { currentTime })
+	socket.on(ACTIONS.REQUEST_SYNC, ({ roomID }) => {
+		console.log(`Client ${socket.id} requested sync for room: ${roomID}`)
+		socket.to(roomID).emit(ACTIONS.REQUEST_SYNC)
 	})
 
-	// Обработка события VIDEO_PAUSE
-	socket.on(ACTIONS.VIDEO_PAUSE, ({ roomID, currentTime }) => {
-		console.log(`Client ${socket.id} is pausing video in room: ${roomID}`)
-		socket.to(roomID).emit(ACTIONS.VIDEO_PAUSE, { currentTime })
+	socket.on(ACTIONS.SYNC_STATE, ({ roomID, time, isPlaying }) => {
+		console.log(
+			`Client ${socket.id} is syncing state for room: ${roomID} with time: ${time} and isPlaying: ${isPlaying}`
+		)
+		socket.to(roomID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
 	})
 
-	// Обработка события VIDEO_SEEK
-	socket.on(ACTIONS.VIDEO_SEEK, ({ roomID, currentTime }) => {
-		console.log(`Client ${socket.id} is seeking video to ${currentTime}s in room: ${roomID}`)
-		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { currentTime })
+	socket.on(ACTIONS.VIDEO_PLAY, ({ roomID, time }) => {
+		console.log(`Client ${socket.id} is playing video in room: ${roomID} at time: ${time}`)
+		socket.to(roomID).emit(ACTIONS.VIDEO_PLAY, { time })
+	})
+
+	socket.on(ACTIONS.VIDEO_PAUSE, ({ roomID, time }) => {
+		console.log(`Client ${socket.id} is pausing video in room: ${roomID} at time: ${time}`)
+		socket.to(roomID).emit(ACTIONS.VIDEO_PAUSE, { time })
+	})
+
+	socket.on(ACTIONS.VIDEO_SEEK, ({ roomID, time }) => {
+		console.log(`Client ${socket.id} is seeking video in room: ${roomID} to time: ${time}`)
+		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { time })
 	})
 })
 
