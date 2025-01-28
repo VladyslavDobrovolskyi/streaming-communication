@@ -24,22 +24,24 @@ function shareRoomsInfo() {
 }
 
 io.on('connection', socket => {
-	console.log(`New client connected: ${socket.id}`)
+	console.log(`[INFO] New client connected: ${socket.id}`)
 	shareRoomsInfo()
 
 	socket.on(ACTIONS.JOIN, config => {
 		const { room: roomID } = config
 		const { rooms: joinedRooms } = socket
-		console.log(`Client ${socket.id} is attempting to join room: ${roomID}`)
+		console.log(`[INFO] Client ${socket.id} attempting to join room: ${roomID}`)
+
 		if (Array.from(joinedRooms).includes(roomID)) {
-			console.warn(`Client ${socket.id} already joined to room: ${roomID}`)
+			console.warn(`[WARN] Client ${socket.id} already joined room: ${roomID}`)
 			return
 		}
 
 		const clients = Array.from(io.sockets.adapter.rooms.get(roomID) || [])
-		console.log(`Room ${roomID} has ${clients.length} clients`)
+		console.log(`[INFO] Room ${roomID} has ${clients.length} clients before client ${socket.id} joins`)
 
 		clients.forEach(clientID => {
+			console.log(`[DEBUG] Notifying client ${clientID} about new peer: ${socket.id}`)
 			io.to(clientID).emit(ACTIONS.ADD_PEER, {
 				peerID: socket.id,
 				createOffer: false,
@@ -51,21 +53,22 @@ io.on('connection', socket => {
 		})
 
 		socket.join(roomID)
-		console.log(`Client ${socket.id} joined room: ${roomID}`)
+		console.log(`[INFO] Client ${socket.id} joined room: ${roomID}`)
 		shareRoomsInfo()
 	})
 
 	function leaveRoom() {
 		const { rooms } = socket
-		console.log(`Client ${socket.id} is leaving rooms: ${Array.from(rooms).join(', ')}`)
+		console.log(`[INFO] Client ${socket.id} is leaving rooms: ${Array.from(rooms).join(', ')}`)
 
 		Array.from(rooms)
 			.filter(roomID => validate(roomID) && version(roomID) === 4)
 			.forEach(roomID => {
 				const clients = Array.from(io.sockets.adapter.rooms.get(roomID) || [])
-				console.log(`Room ${roomID} has ${clients.length} clients before client ${socket.id} leaves`)
+				console.log(`[INFO] Room ${roomID} had ${clients.length} clients before client ${socket.id} left`)
 
 				clients.forEach(clientID => {
+					console.log(`[DEBUG] Removing client ${socket.id} from peer list of ${clientID}`)
 					io.to(clientID).emit(ACTIONS.REMOVE_PEER, {
 						peerID: socket.id,
 					})
@@ -75,7 +78,7 @@ io.on('connection', socket => {
 				})
 
 				socket.leave(roomID)
-				console.log(`Client ${socket.id} left room: ${roomID}`)
+				console.log(`[INFO] Client ${socket.id} left room: ${roomID}`)
 			})
 
 		shareRoomsInfo()
@@ -85,7 +88,9 @@ io.on('connection', socket => {
 	socket.on('disconnecting', leaveRoom)
 
 	socket.on(ACTIONS.RELAY_SDP, ({ peerID, sessionDescription }) => {
-		console.log(`Client ${socket.id} is relaying SDP to peer ${peerID}`)
+		console.log(
+			`[INFO] Client ${socket.id} is relaying SDP to peer ${peerID}. SDP Type: ${sessionDescription.type}`
+		)
 		io.to(peerID).emit(ACTIONS.SESSION_DESCRIPTION, {
 			peerID: socket.id,
 			sessionDescription,
@@ -93,7 +98,10 @@ io.on('connection', socket => {
 	})
 
 	socket.on(ACTIONS.RELAY_ICE, ({ peerID, iceCandidate }) => {
-		console.log(`Client ${socket.id} is relaying ICE candidate to peer ${peerID}`)
+		console.log(`[INFO] Client ${socket.id} is relaying ICE candidate to peer ${peerID}`)
+		if (iceCandidate) {
+			console.debug(`[DEBUG] ICE Candidate details: ${JSON.stringify(iceCandidate, null, 2)}`)
+		}
 		io.to(peerID).emit(ACTIONS.ICE_CANDIDATE, {
 			peerID: socket.id,
 			iceCandidate,
@@ -101,33 +109,33 @@ io.on('connection', socket => {
 	})
 
 	socket.on(ACTIONS.REQUEST_SYNC, ({ roomID }) => {
-		console.log(`Client ${socket.id} requested sync for room: ${roomID}`)
+		console.log(`[INFO] Client ${socket.id} requested sync for room: ${roomID}`)
 		socket.to(roomID).emit(ACTIONS.REQUEST_SYNC)
 	})
 
 	socket.on(ACTIONS.SYNC_STATE, ({ roomID, time, isPlaying }) => {
 		console.log(
-			`Client ${socket.id} is syncing state for room: ${roomID} with time: ${time} and isPlaying: ${isPlaying}`
+			`[INFO] Client ${socket.id} syncing state for room: ${roomID}. Time: ${time}, isPlaying: ${isPlaying}`
 		)
 		socket.to(roomID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
 	})
 
 	socket.on(ACTIONS.VIDEO_PLAY, ({ roomID, time }) => {
-		console.log(`Client ${socket.id} is playing video in room: ${roomID} at time: ${time}`)
+		console.log(`[INFO] Client ${socket.id} is playing video in room: ${roomID} at time: ${time}`)
 		socket.to(roomID).emit(ACTIONS.VIDEO_PLAY, { time })
 	})
 
 	socket.on(ACTIONS.VIDEO_PAUSE, ({ roomID, time }) => {
-		console.log(`Client ${socket.id} is pausing video in room: ${roomID} at time: ${time}`)
+		console.log(`[INFO] Client ${socket.id} is pausing video in room: ${roomID} at time: ${time}`)
 		socket.to(roomID).emit(ACTIONS.VIDEO_PAUSE, { time })
 	})
 
 	socket.on(ACTIONS.VIDEO_SEEK, ({ roomID, time }) => {
-		console.log(`Client ${socket.id} is seeking video in room: ${roomID} to time: ${time}`)
+		console.log(`[INFO] Client ${socket.id} is seeking video in room: ${roomID} to time: ${time}`)
 		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { time })
 	})
 })
 
 server.listen(PORT, () => {
-	console.log(`Server is running on port ${PORT}`)
+	console.log(`[INFO] Server is running on port ${PORT}`)
 })
