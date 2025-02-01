@@ -130,8 +130,10 @@ io.on('connection', socket => {
 		socket.to(roomID).emit(ACTIONS.VIDEO_PAUSE, { time })
 	})
 
-	socket.on(ACTIONS.VIDEO_SEEK, ({ roomID, time }) => {
-		console.log(`[INFO] Client ${socket.id} is seeking video in room: ${roomID} to time: ${time}`)
+	socket.on(ACTIONS.VIDEO_SEEK, ({ roomID, time, direction }) => {
+		console.log(
+			`[INFO] Client ${socket.id} is seeking video in room: ${roomID} to time: ${time} (Direction: ${direction})`
+		)
 		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { time })
 	})
 })
