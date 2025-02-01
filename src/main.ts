@@ -134,7 +134,7 @@ io.on('connection', socket => {
 		console.log(
 			`[INFO] Client ${socket.id} is seeking video in room: ${roomID} to time: ${time} (Direction: ${direction})`
 		)
-		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { time })
+		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { time, direction })
 	})
 })
 
