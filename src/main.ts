@@ -119,6 +119,14 @@ io.on('connection', socket => {
 		)
 		socket.to(roomID).emit(ACTIONS.SYNC_CAMERA, { socketId, isCameraDisabled })
 	})
+	socket.on(ACTIONS.SYNC_MICROPHONE, ({ roomID, socketId, isMicrophoneDisabled }) => {
+		console.log(
+			`[INFO] Client ${socketId}  ${
+				isMicrophoneDisabled ? 'disable' : 'enable '
+			} the microphone in the room: ${roomID}`
+		)
+		socket.to(roomID).emit(ACTIONS.SYNC_CAMERA, { socketId, isMicrophoneDisabled })
+	})
 	socket.on(ACTIONS.SYNC_STATE, ({ roomID, time, isPlaying }) => {
 		console.log(
 			`[INFO] Client ${socket.id} syncing state for room: ${roomID}. Time: ${time}, isPlaying: ${isPlaying}`
