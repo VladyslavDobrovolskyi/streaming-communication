@@ -115,7 +115,7 @@ io.on('connection', socket => {
 
 	socket.on(ACTIONS.SYNC_CAMERA, ({ roomID, socketId, isCameraDisabled }) => {
 		console.log(
-			`[INFO] Client ${socketId}  ${isCameraDisabled ? 'enable' : 'disable '} the camera in the room: ${roomID}`
+			`[INFO] Client ${socketId}  ${isCameraDisabled ? 'disable' : 'enable '} the camera in the room: ${roomID}`
 		)
 		socket.to(roomID).emit(ACTIONS.SYNC_CAMERA, { socketId, isCameraDisabled })
 	})
