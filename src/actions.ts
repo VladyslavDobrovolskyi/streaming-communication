@@ -14,7 +14,7 @@ const ACTIONS = {
 	REQUEST_SYNC: 'request-sync',
 	SYNC_STATE: 'sync-state',
 	SYNC_CAMERA: 'sync-camera',
-	SYNC_MICROPHONE: 'sync-micro',
+	SYNC_MICROPHONE: 'sync-microphone',
 }
 
 export default ACTIONS
