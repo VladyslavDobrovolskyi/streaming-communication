@@ -150,6 +150,16 @@ io.on('connection', socket => {
 		)
 		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { time, direction })
 	})
+	socket.on(ACTIONS.SEND_CHAT_MESSAGE, ({ roomID, message, sender }) => {
+		console.log(`[INFO] Client ${socket.id} sent a message in room ${roomID}: ${message}`)
+
+		// Отправляем сообщение всем клиентам в комнате, включая отправителя
+		socket.to(roomID).emit(ACTIONS.RECEIVE_CHAT_MESSAGE, {
+			sender,
+			message,
+			timestamp: Date.now(),
+		})
+	})
 })
 
 server.listen(PORT, () => {
