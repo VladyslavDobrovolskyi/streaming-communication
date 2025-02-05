@@ -15,6 +15,8 @@ const ACTIONS = {
 	SYNC_STATE: 'sync-state',
 	SYNC_CAMERA: 'sync-camera',
 	SYNC_MICROPHONE: 'sync-microphone',
+	SEND_CHAT_MESSAGE: 'send-chat-message',
+	RECEIVE_CHAT_MESSAGE: 'receive-chat-message',
 }
 
 export default ACTIONS
