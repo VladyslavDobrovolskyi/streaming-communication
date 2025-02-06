@@ -133,6 +133,10 @@ io.on('connection', socket => {
 		)
 		socket.to(roomID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
 	})
+	socket.on(ACTIONS.SYNC_INFO, ({ roomID, username }) => {
+		console.log(`[INFO] Client ${socket.id} share his nickname: ${username} in the room: ${roomID}`)
+		socket.to(roomID).emit(ACTIONS.SYNC_INFO, { socketID: socket.id, username })
+	})
 
 	socket.on(ACTIONS.VIDEO_PLAY, ({ roomID, time }) => {
 		console.log(`[INFO] Client ${socket.id} is playing video in room: ${roomID} at time: ${time}`)

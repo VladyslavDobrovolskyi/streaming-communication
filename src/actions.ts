@@ -13,6 +13,7 @@ const ACTIONS = {
 	VIDEO_SEEK: 'video-seek',
 	REQUEST_SYNC: 'request-sync',
 	SYNC_STATE: 'sync-state',
+	SYNC_INFO: 'sync-info',
 	SYNC_CAMERA: 'sync-camera',
 	SYNC_MICROPHONE: 'sync-microphone',
 	SEND_CHAT_MESSAGE: 'send-chat-message',
