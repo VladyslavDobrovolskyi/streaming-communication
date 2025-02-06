@@ -133,9 +133,19 @@ io.on('connection', socket => {
 		)
 		socket.to(roomID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
 	})
-	socket.on(ACTIONS.SYNC_INFO, ({ roomID, username }) => {
+	socket.on(ACTIONS.SYNC_INFO, ({ roomID, username }: { roomID: string; username: string }) => {
 		console.log(`[INFO] Client ${socket.id} share his nickname: ${username} in the room: ${roomID}`)
 		socket.to(roomID).emit(ACTIONS.SYNC_INFO, { socketId: socket.id, username })
+	})
+
+	socket.on(ACTIONS.REQUEST_PARTICIPANT_INFO, ({ roomID }) => {
+		console.log(`[INFO] Client ${socket.id} requested participant info for room: ${roomID}`)
+		socket.to(roomID).emit(ACTIONS.REQUEST_PARTICIPANT_INFO, { requesterId: socket.id })
+	})
+
+	socket.on(ACTIONS.SEND_PARTICIPANT_INFO, ({ roomID, requesterId, info }) => {
+		console.log(`[INFO] Client ${socket.id} sending participant info to ${requesterId} in room: ${roomID}`)
+		io.to(requesterId).emit(ACTIONS.SYNC_INFO, { socketId: socket.id, ...info })
 	})
 
 	socket.on(ACTIONS.VIDEO_PLAY, ({ roomID, time }) => {

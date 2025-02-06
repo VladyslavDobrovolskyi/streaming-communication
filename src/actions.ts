@@ -18,6 +18,8 @@ const ACTIONS = {
 	SYNC_MICROPHONE: 'sync-microphone',
 	SEND_CHAT_MESSAGE: 'send-chat-message',
 	RECEIVE_CHAT_MESSAGE: 'receive-chat-message',
+	REQUEST_PARTICIPANT_INFO: 'request_participant_info',
+	SEND_PARTICIPANT_INFO: 'send_participant_info',
 }
 
 export default ACTIONS
