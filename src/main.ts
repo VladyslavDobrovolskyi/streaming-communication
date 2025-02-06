@@ -145,6 +145,7 @@ io.on('connection', socket => {
 
 	socket.on(ACTIONS.SEND_PARTICIPANT_INFO, ({ roomID, requesterId, info }) => {
 		console.log(`[INFO] Client ${socket.id} sending participant info to ${requesterId} in room: ${roomID}`)
+		console.log(`[DEBUG] Participant info: ${JSON.stringify(info, null, 2)}`)
 		io.to(requesterId).emit(ACTIONS.SYNC_INFO, { socketId: socket.id, ...info })
 	})
 
