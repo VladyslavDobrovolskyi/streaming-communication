@@ -133,10 +133,13 @@ io.on('connection', socket => {
 		)
 		socket.to(roomID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
 	})
-	socket.on(ACTIONS.SYNC_INFO, ({ roomID, username }: { roomID: string; username: string }) => {
-		console.log(`[INFO] Client ${socket.id} share his nickname: ${username} in the room: ${roomID}`)
-		socket.to(roomID).emit(ACTIONS.SYNC_INFO, { socketId: socket.id, username })
-	})
+	socket.on(
+		ACTIONS.SYNC_INFO,
+		({ roomID, username, avatar }: { roomID: string; username: string; avatar: string }) => {
+			console.log(`[INFO] Client ${socket.id} share his nickname: ${username} in the room: ${roomID}`)
+			socket.to(roomID).emit(ACTIONS.SYNC_INFO, { socketId: socket.id, username, avatar })
+		}
+	)
 
 	socket.on(ACTIONS.REQUEST_PARTICIPANT_INFO, ({ roomID }) => {
 		console.log(`[INFO] Client ${socket.id} requested participant info for room: ${roomID}`)
