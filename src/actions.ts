@@ -20,6 +20,8 @@ const ACTIONS = {
 	RECEIVE_CHAT_MESSAGE: 'receive-chat-message',
 	REQUEST_PARTICIPANT_INFO: 'request_participant_info',
 	SEND_PARTICIPANT_INFO: 'send_participant_info',
+	SEND_PRIVATE_MESSAGE: 'send-private-message',
+	RECEIVE_PRIVATE_MESSAGE: 'receive-private-message',
 }
 
 export default ACTIONS

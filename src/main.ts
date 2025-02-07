@@ -179,6 +179,28 @@ io.on('connection', socket => {
 			timestamp: Date.now(),
 		})
 	})
+
+	// New event handler for sending private messages
+	socket.on(ACTIONS.SEND_PRIVATE_MESSAGE, ({ roomID, to, message }) => {
+		console.log(`[INFO] Client ${socket.id} is sending a private message to ${to} in room ${roomID}`)
+
+		// Send the private message to the recipient
+		io.to(to).emit(ACTIONS.RECEIVE_PRIVATE_MESSAGE, {
+			from: socket.id,
+			message,
+			timestamp: Date.now(),
+		})
+
+		// Send a confirmation back to the sender
+		socket.emit(ACTIONS.RECEIVE_PRIVATE_MESSAGE, {
+			from: socket.id,
+			to,
+			message,
+			timestamp: Date.now(),
+		})
+
+		console.log(`[DEBUG] Private message sent from ${socket.id} to ${to}: ${message}`)
+	})
 })
 
 server.listen(PORT, () => {
