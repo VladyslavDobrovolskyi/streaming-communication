@@ -135,9 +135,31 @@ io.on('connection', socket => {
 	})
 	socket.on(
 		ACTIONS.SYNC_INFO,
-		({ roomID, username, avatar }: { roomID: string; username: string; avatar: string }) => {
-			console.log(`[INFO] Client ${socket.id} share his nickname: ${username} in the room: ${roomID}`)
-			socket.to(roomID).emit(ACTIONS.SYNC_INFO, { socketId: socket.id, username, avatar })
+		({
+			roomID,
+			username,
+			avatar,
+			isCameraDisabled,
+			isMicrophoneDisabled,
+		}: {
+			roomID: string
+			username: string
+			avatar: string
+			isCameraDisabled: boolean
+			isMicrophoneDisabled: boolean
+		}) => {
+			console.log(
+				`[INFO] Client ${socket.id} share his nickname: ${username}  and media-info [isCameraDisabled: ${isCameraDisabled} | isMicrophoneDisabled: ${isMicrophoneDisabled} in the room: ${roomID}`
+			)
+			socket
+				.to(roomID)
+				.emit(ACTIONS.SYNC_INFO, {
+					socketId: socket.id,
+					username,
+					avatar,
+					isCameraDisabled,
+					isMicrophoneDisabled,
+				})
 		}
 	)
 
