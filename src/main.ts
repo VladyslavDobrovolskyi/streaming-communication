@@ -151,15 +151,13 @@ io.on('connection', socket => {
 			console.log(
 				`[INFO] Client ${socket.id} share his nickname: ${username}  and media-info [isCameraDisabled: ${isCameraDisabled} | isMicrophoneDisabled: ${isMicrophoneDisabled} in the room: ${roomID}`
 			)
-			socket
-				.to(roomID)
-				.emit(ACTIONS.SYNC_INFO, {
-					socketId: socket.id,
-					username,
-					avatar,
-					isCameraDisabled,
-					isMicrophoneDisabled,
-				})
+			socket.to(roomID).emit(ACTIONS.SYNC_INFO, {
+				socketId: socket.id,
+				username,
+				avatar,
+			})
+			socket.to(roomID).emit(ACTIONS.SYNC_CAMERA, { socketId: socket.id, isCameraDisabled })
+			socket.to(roomID).emit(ACTIONS.SYNC_MICROPHONE, { socketId: socket.id, isMicrophoneDisabled })
 		}
 	)
 
