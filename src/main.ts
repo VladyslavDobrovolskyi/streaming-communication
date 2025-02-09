@@ -155,6 +155,8 @@ io.on('connection', socket => {
 				socketId: socket.id,
 				username,
 				avatar,
+				isCameraDisabled,
+				isMicrophoneDisabled,
 			})
 			socket.to(roomID).emit(ACTIONS.SYNC_CAMERA, { socketId: socket.id, isCameraDisabled })
 			socket.to(roomID).emit(ACTIONS.SYNC_MICROPHONE, { socketId: socket.id, isMicrophoneDisabled })
