@@ -176,7 +176,7 @@ io.on('connection', socket => {
 
 	socket.on(ACTIONS.VIDEO_PLAY, ({ roomID, time }) => {
 		console.log(`[INFO] Client ${socket.id} is playing video in room: ${roomID} at time: ${time}`)
-		socket.to(roomID).emit(ACTIONS.VIDEO_PLAY, { time })
+		socket.to(roomID).emit(ACTIONS.VIDEO_PLAY, { socketID: socket.id, time })
 	})
 
 	socket.on(ACTIONS.VIDEO_PAUSE, ({ roomID, time }) => {
