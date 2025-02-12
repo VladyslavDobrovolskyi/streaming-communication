@@ -21,6 +21,8 @@ const ACTIONS = {
 	REQUEST_PARTICIPANT_INFO: 'request_participant_info',
 	SEND_PARTICIPANT_INFO: 'send_participant_info',
 	SEND_PRIVATE_MESSAGE: 'send-private-message',
+	SEND_VIDEO_PLAY: 'send-video-play',
+	RECEIVE_VIDEO_PLAY: 'receive-video-play',
 	RECEIVE_PRIVATE_MESSAGE: 'receive-private-message',
 }
 
