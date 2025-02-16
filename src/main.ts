@@ -193,7 +193,7 @@ io.on('connection', socket => {
 		console.log(
 			`[INFO] Client ${socket.id} is seeking video in room: ${roomID} to time: ${time} (Direction: ${direction})`
 		)
-		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { time, direction })
+		socket.to(roomID).emit(ACTIONS.VIDEO_SEEK, { socketID: socket.id, time, direction })
 	})
 	socket.on(ACTIONS.SEND_CHAT_MESSAGE, ({ roomID, username, message }) => {
 		console.log(`[INFO] Client [${username} | ${socket.id}] sent a message in room ${roomID}: ${message}`)
