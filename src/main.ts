@@ -219,12 +219,6 @@ io.on('connection', socket => {
 		})
 
 		// Send a confirmation back to the sender
-		socket.emit(ACTIONS.RECEIVE_PRIVATE_MESSAGE, {
-			from: socket.id,
-			to,
-			message,
-			timestamp: Date.now(),
-		})
 
 		console.log(`[DEBUG] Private message sent from ${socket.id} to ${to}: ${message}`)
 	})
