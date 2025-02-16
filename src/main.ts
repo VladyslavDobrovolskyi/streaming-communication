@@ -212,7 +212,7 @@ io.on('connection', socket => {
 		console.log(`[INFO] Client ${socket.id} is sending a private message to ${to} in room ${roomID}`)
 
 		// Send the private message to the recipient
-		io.to(to).emit(ACTIONS.RECEIVE_PRIVATE_MESSAGE, {
+		socket.to(to).emit(ACTIONS.RECEIVE_PRIVATE_MESSAGE, {
 			from: socket.id,
 			message,
 			timestamp: Date.now(),
