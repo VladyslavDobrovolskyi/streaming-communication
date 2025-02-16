@@ -186,7 +186,7 @@ io.on('connection', socket => {
 
 	socket.on(ACTIONS.VIDEO_PAUSE, ({ roomID, time }) => {
 		console.log(`[INFO] Client ${socket.id} is pausing video in room: ${roomID} at time: ${time}`)
-		socket.to(roomID).emit(ACTIONS.VIDEO_PAUSE, { time })
+		socket.to(roomID).emit(ACTIONS.VIDEO_PAUSE, { socketID: socket.id, time })
 	})
 
 	socket.on(ACTIONS.VIDEO_SEEK, ({ roomID, time, direction }) => {
