@@ -57,7 +57,17 @@ io.on('connection', socket => {
 		shareRoomsInfo()
 	})
 
+	// Track if leaveRoom has been called to prevent duplicate executions
+	let hasLeftRooms = false
+
 	function leaveRoom() {
+		// Prevent duplicate executions
+		if (hasLeftRooms) {
+			console.log(`[INFO] Client ${socket.id} already left rooms, skipping duplicate leave`)
+			return
+		}
+
+		hasLeftRooms = true
 		const { rooms } = socket
 		console.log(`[INFO] Client ${socket.id} is leaving rooms: ${Array.from(rooms).join(', ')}`)
 
@@ -85,7 +95,13 @@ io.on('connection', socket => {
 	}
 
 	socket.on(ACTIONS.LEAVE, leaveRoom)
+
+	// Handle both disconnecting and disconnect events
 	socket.on('disconnecting', leaveRoom)
+	socket.on('disconnect', () => {
+		console.log(`[INFO] Client ${socket.id} disconnected`)
+		// No need to call leaveRoom again, it's already called by 'disconnecting'
+	})
 
 	socket.on(ACTIONS.RELAY_SDP, ({ peerID, sessionDescription }) => {
 		console.log(
@@ -219,7 +235,6 @@ io.on('connection', socket => {
 		})
 
 		// Send a confirmation back to the sender
-
 		console.log(`[DEBUG] Private message sent from ${socket.id} to ${to}: ${message}`)
 	})
 })
