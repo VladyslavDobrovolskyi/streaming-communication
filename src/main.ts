@@ -143,12 +143,12 @@ io.on('connection', socket => {
 		)
 		socket.to(roomID).emit(ACTIONS.SYNC_MICROPHONE, { socketId, isMicrophoneDisabled })
 	})
-	socket.on(ACTIONS.SYNC_STATE, ({ roomID, time, isPlaying }) => {
-		console.log(
-			`[INFO] Client ${socket.id} syncing state for room: ${roomID}. Time: ${time}, isPlaying: ${isPlaying}`
-		)
-		socket.to(roomID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
-	})
+	// socket.on(ACTIONS.SYNC_STATE, ({ roomID, time, isPlaying }) => {
+	// 	console.log(
+	// 		`[INFO] Client ${socket.id} syncing state for room: ${roomID}. Time: ${time}, isPlaying: ${isPlaying}`
+	// 	)
+	// 	socket.to(roomID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
+	// })
 	socket.on(
 		ACTIONS.SYNC_INFO,
 		({
@@ -187,7 +187,7 @@ io.on('connection', socket => {
 
 	socket.on(ACTIONS.SEND_TIME_AND_STATE, ({ socketID, time, isPlaying }) => {
 		console.log(
-			`[INFO] Client ${socket.id} sending time and state to ${socket.id}. Time: ${time}, isPlaying: ${isPlaying}`
+			`[INFO] Client ${socket.id} sending time and state to ${socketID}. Time: ${time}, isPlaying: ${isPlaying}`
 		)
 		io.to(socketID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
 	})
