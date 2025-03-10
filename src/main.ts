@@ -189,7 +189,7 @@ io.on('connection', socket => {
 		console.log(
 			`[INFO] Client ${socket.id} sending time and state to ${socket.id}. Time: ${time}, isPlaying: ${isPlaying}`
 		)
-		io.to(socket.id).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
+		io.to(socketID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
 	})
 
 	socket.on(ACTIONS.REQUEST_PARTICIPANT_INFO, ({ roomID }) => {
