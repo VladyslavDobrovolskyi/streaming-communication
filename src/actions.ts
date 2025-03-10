@@ -24,6 +24,8 @@ const ACTIONS = {
 	SEND_VIDEO_PLAY: 'send-video-play',
 	RECEIVE_VIDEO_PLAY: 'receive-video-play',
 	RECEIVE_PRIVATE_MESSAGE: 'receive-private-message',
+	REQUEST_TIME_AND_STATE: 'request-time-and-state',
+	SEND_TIME_AND_STATE: 'send-time-and-state',
 }
 
 export default ACTIONS
