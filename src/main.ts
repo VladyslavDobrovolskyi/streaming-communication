@@ -181,14 +181,15 @@ io.on('connection', socket => {
 
 	socket.on(ACTIONS.REQUEST_TIME_AND_STATE, ({ roomID }) => {
 		console.log(`[INFO] Client ${socket.id} requested time and state for room: ${roomID}`)
-		socket.to(roomID).emit(ACTIONS.REQUEST_TIME_AND_STATE, { socketID: socket.id })
+		const socketID = socket.id
+		socket.to(roomID).emit(ACTIONS.REQUEST_TIME_AND_STATE, { socketID })
 	})
 
 	socket.on(ACTIONS.SEND_TIME_AND_STATE, ({ socketID, time, isPlaying }) => {
 		console.log(
-			`[INFO] Client ${socket.id} sending time and state to ${socketID}. Time: ${time}, isPlaying: ${isPlaying}`
+			`[INFO] Client ${socket.id} sending time and state to ${socket.id}. Time: ${time}, isPlaying: ${isPlaying}`
 		)
-		io.to(socketID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
+		io.to(socket.id).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
 	})
 
 	socket.on(ACTIONS.REQUEST_PARTICIPANT_INFO, ({ roomID }) => {
