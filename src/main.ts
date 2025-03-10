@@ -186,10 +186,11 @@ io.on('connection', socket => {
 	})
 
 	socket.on(ACTIONS.SEND_TIME_AND_STATE, ({ socketID, time, isPlaying }) => {
+		const socketId = socketID.socketID
 		console.log(
 			`[INFO] Client ${socket.id} sending time and state to ${socketID}. Time: ${time}, isPlaying: ${isPlaying}`
 		)
-		io.to(socketID).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
+		io.to(socketId).emit(ACTIONS.SYNC_STATE, { time, isPlaying })
 	})
 
 	socket.on(ACTIONS.REQUEST_PARTICIPANT_INFO, ({ roomID }) => {
