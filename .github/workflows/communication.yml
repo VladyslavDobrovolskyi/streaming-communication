@@ -13,12 +13,12 @@ jobs:
             - name: Executing remote SSH commands using password
               uses: appleboy/ssh-action@v1.0.3
               with:
-                  host: ${{ secrets.HOST }}
-                  username: ${{ secrets.USERNAME }}
-                  password: ${{ secrets.PASSWORD }}
-                  port: ${{ secrets.PORT }}
-                  script: |
-                      cd /home/ubuntu/
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                key: ${{ secrets.KEY }}
+                port: ${{ secrets.PORT }}
+                script: |
+                      cd /home/vdobrovolskyi/watchtogether.fun
                       echo "🔄 Cтягиваем код с github"
                       echo "🗑 Очищаем следы прошлых запусков, если имеются"
                       if [ -d "streaming-communication" ]; then
@@ -67,7 +67,7 @@ jobs:
                           exit 1
                       fi
 
-                      cd /home/ubuntu/
+                      cd /home/vdobrovolskyi/watchtogether.fun
 
                        echo "🔍 Проверка наличия контейнеров postgres и nginx"
                       if [ ! $(docker ps -q -f name=postgres) ]; then
