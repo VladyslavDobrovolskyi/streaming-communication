@@ -10,8 +10,8 @@ jobs:
         name: Build and Deploy
         runs-on: ubuntu-latest
         steps:
-            - name: Executing remote SSH commands using password
-              uses: appleboy/ssh-action@v1.0.3
+            - name: SSH Remote Commands
+              uses: appleboy/ssh-action@v1.2.2
               with:
                 host: ${{ secrets.HOST }}
                 username: ${{ secrets.USERNAME }}
