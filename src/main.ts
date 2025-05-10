@@ -10,7 +10,7 @@ const io = new Server(server, {
 	transports: ['websocket'],
 })
 
-const PORT = process.env.PORT || 9999
+const PORT = process.env.PORT || 20999
 
 function getClientRooms() {
 	const { rooms } = io.sockets.adapter
