@@ -13,11 +13,11 @@ jobs:
             - name: SSH Remote Commands
               uses: appleboy/ssh-action@v1.2.2
               with:
-                host: ${{ secrets.HOST }}
-                username: ${{ secrets.USERNAME }}
-                key: ${{ secrets.KEY }}
-                port: ${{ secrets.PORT }}
-                script: |
+                  host: ${{ secrets.HOST }}
+                  username: ${{ secrets.USERNAME }}
+                  key: ${{ secrets.KEY }}
+                  port: ${{ secrets.PORT }}
+                  script: |
                       cd /home/vdobrovolskyi/watchtogether.fun
                       echo "🔄 Cтягиваем код с github"
                       echo "🗑 Очищаем следы прошлых запусков, если имеются"
@@ -46,17 +46,17 @@ jobs:
                       echo "🛠 Пересборка контейнера streaming-communication без кэша"
                       docker build -t streaming-communication .
 
-                      echo "🔍 Проверка наличия сети streaming-network"
-                      if [ ! $(docker network ls -q -f name=streaming-network) ]; then
-                          echo "🌐 Сеть streaming-network не найдена, создаем сеть"
-                          docker network create streaming-network
+                      echo "🔍 Проверка наличия сети watchtogether-network"
+                      if [ ! $(docker network ls -q -f name=watchtogether-network) ]; then
+                          echo "🌐 Сеть watchtogether-network не найдена, создаем сеть"
+                          docker network create watchtogether-network
                       fi
 
                       echo "🚀 Запуск контейнера streaming-communication"
                       docker run -d --name streaming-communication \
-                        --network streaming-network \
+                        --network watchtogether-network \
                         --restart always \
-                        -p 9999:9999 \
+                        -p 20999:20999 \
                         streaming-communication
 
                       echo "🔍 Проверка, что контейнер streaming-communication поднялся"
