@@ -254,5 +254,5 @@ io.on('connection', socket => {
 })
 
 server.listen(PORT, () => {
-	console.log(`[INFO] Server is running on port ${PORT}`)
+	console.log(`[INFO] WS Server is running on port ${PORT}`)
 })
